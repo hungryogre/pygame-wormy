@@ -54,6 +54,14 @@ def checkCollisionWorm(worm, loc):
             return True
     return False
 
+def printDeathDetails(worm, dir, apple):
+    print("Oh, no!  I died.")
+    print("It happened when I was going ", dir)
+    print("The apple I was going after was at ", apple['x'], ", ", apple['y'])
+    print("My body looked like this:")
+    for wormSegment in worm:
+        print(wormSegment['x'], wormSegment['y'])
+
 def runGame():
     # Set a random start point.
     startx = random.randint(5, CELLWIDTH - 6)
@@ -71,6 +79,7 @@ def runGame():
             if event.type == QUIT:
                 terminate()
             elif event.type == KEYDOWN:
+                print("key down ", event.key)
                 if (event.key == K_LEFT or event.key == K_a) and direction != RIGHT:
                     direction = LEFT
                 elif (event.key == K_RIGHT or event.key == K_d) and direction != LEFT:
@@ -82,6 +91,23 @@ def runGame():
                 elif event.key == K_ESCAPE:
                     terminate()
 
+        # check if the worm has hit itself or the edge
+        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or \
+           wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
+            printDeathDetails(wormCoords, direction, apple)
+            return # game over
+        if checkCollisionWorm(wormCoords[1:], wormCoords[HEAD]):
+            printDeathDetails(wormCoords, direction, apple)
+            return # game over
+
+        # check if worm has eaten an apply
+        if checkCollision(wormCoords[HEAD], apple):
+            # don't remove worm's tail segment
+            apple = getRandomLocation() # set a new apple somewhere
+        else:
+            del wormCoords[-1] # remove worm's tail segment
+
+
         if (direction == UP and apple['y'] >= wormCoords[HEAD]['y']):
             direction = LEFT if wormCoords[HEAD]['x'] >= apple['x'] else RIGHT
         elif (direction == RIGHT and apple['x'] <= wormCoords[HEAD]['x']):
@@ -91,19 +117,6 @@ def runGame():
         elif (direction == LEFT and apple['x'] >= wormCoords[HEAD]['x']):
             direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
 
-        # check if the worm has hit itself or the edge
-        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or \
-           wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
-            return # game over
-        if checkCollisionWorm(wormCoords[1:], wormCoords[HEAD]):
-            return # game over
-
-        # check if worm has eaten an apply
-        if checkCollision(wormCoords[HEAD], apple):
-            # don't remove worm's tail segment
-            apple = getRandomLocation() # set a new apple somewhere
-        else:
-            del wormCoords[-1] # remove worm's tail segment
 
         # move the worm by adding a segment in the direction it is moving
         if direction == UP:
