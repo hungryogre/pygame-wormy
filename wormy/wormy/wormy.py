@@ -114,13 +114,17 @@ def runGame():
 
 
         if (direction == UP and apple['y'] >= wormCoords[HEAD]['y']):
-            direction = LEFT if wormCoords[HEAD]['x'] >= apple['x'] else RIGHT
+            if wormCoords[-1]['y'] - wormCoords[HEAD]['y'] > 0:
+                direction = LEFT if wormCoords[HEAD]['x'] >= apple['x'] else RIGHT
         elif (direction == RIGHT and apple['x'] <= wormCoords[HEAD]['x']):
-            direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
+            if wormCoords[-1]['x'] - wormCoords[HEAD]['x'] < 0:
+                direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
         elif (direction == DOWN and apple['y'] <= wormCoords[HEAD]['y']):
-            direction = RIGHT if wormCoords[HEAD]['x'] <= apple['x'] else LEFT
+            if wormCoords[-1]['y'] - wormCoords[HEAD]['y'] < 0:
+                direction = RIGHT if wormCoords[HEAD]['x'] <= apple['x'] else LEFT
         elif (direction == LEFT and apple['x'] >= wormCoords[HEAD]['x']):
-            direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
+            if wormCoords[-1]['x'] - wormCoords[HEAD]['x'] > 0:
+                direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
 
 
         # move the worm by adding a segment in the direction it is moving
