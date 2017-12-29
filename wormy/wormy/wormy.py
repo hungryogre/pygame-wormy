@@ -45,6 +45,14 @@ def main():
         runGame()
         showGameOverScreen()
 
+def checkCollision(a,b):
+    return a['x'] == b['x'] and a['y'] == b['y']
+
+def checkCollisionWorm(worm, loc):
+    for wormSegment in worm:
+        if checkCollision(wormSegment, loc):
+            return True
+    return False
 
 def runGame():
     # Set a random start point.
@@ -75,14 +83,14 @@ def runGame():
                     terminate()
 
         # check if the worm has hit itself or the edge
-        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
+        if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or \
+           wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
             return # game over
-        for wormBody in wormCoords[1:]:
-            if wormBody['x'] == wormCoords[HEAD]['x'] and wormBody['y'] == wormCoords[HEAD]['y']:
-                return # game over
+        if checkCollisionWorm(wormCoords[1:], wormCoords[HEAD]):
+            return # game over
 
         # check if worm has eaten an apply
-        if wormCoords[HEAD]['x'] == apple['x'] and wormCoords[HEAD]['y'] == apple['y']:
+        if checkCollision(wormCoords[HEAD], apple):
             # don't remove worm's tail segment
             apple = getRandomLocation() # set a new apple somewhere
         else:
