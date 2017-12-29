@@ -103,7 +103,12 @@ def runGame():
         # check if worm has eaten an apply
         if checkCollision(wormCoords[HEAD], apple):
             # don't remove worm's tail segment
-            apple = getRandomLocation() # set a new apple somewhere
+            while True:
+                apple = getRandomLocation()
+                if not checkCollisionWorm(wormCoords, apple):
+                    break
+                else:
+                    print("Don't murder wormy!!!")
         else:
             del wormCoords[-1] # remove worm's tail segment
 
