@@ -74,6 +74,15 @@ def runGame():
                 elif event.key == K_ESCAPE:
                     terminate()
 
+        if (direction == UP and apple['y'] >= wormCoords[HEAD]['y']):
+            direction = LEFT if wormCoords[HEAD]['x'] >= apple['x'] else RIGHT
+        elif (direction == RIGHT and apple['x'] <= wormCoords[HEAD]['x']):
+            direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
+        elif (direction == DOWN and apple['y'] <= wormCoords[HEAD]['y']):
+            direction = RIGHT if wormCoords[HEAD]['x'] <= apple['x'] else LEFT
+        elif (direction == LEFT and apple['x'] >= wormCoords[HEAD]['x']):
+            direction = UP if wormCoords[HEAD]['y'] >= apple['y'] else DOWN
+
         # check if the worm has hit itself or the edge
         if wormCoords[HEAD]['x'] == -1 or wormCoords[HEAD]['x'] == CELLWIDTH or wormCoords[HEAD]['y'] == -1 or wormCoords[HEAD]['y'] == CELLHEIGHT:
             return # game over
